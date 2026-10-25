@@ -1,21 +1,35 @@
 {
   "categories": {
-    "wall": ["WALL", "A-WALL", "WALLS", "BARRIER"],
-    "door": ["DOOR", "DOORS"],
+    "wall": ["WALL", "A-WALL", "WALLS", "BARRIER", "WALL-EXTR", "WALL-INTR", "PARTITION"],
+    "door": ["DOOR", "DOORS", "A-DOOR"],
     "stair": ["STAIR", "STAIRS", "STAIRWELL"],
-    "emergency_exit": ["EXIT", "EMERGENCY_EXIT", "FIRE_EXIT"],
-    "entrance": ["ENTRANCE", "ENTRY"],
+    "emergency_exit": ["EXIT", "EMERGENCY_EXIT", "FIRE_EXIT", "EMERGENCY-EXIT", "EGRESS"],
+    "entrance": ["ENTRANCE", "ENTRY", "INGRESS", "MAIN_ENTRANCE"],
     "hydrant": ["HYDRANT", "FIRE-HYDRANT", "FIRE_HYDRANT"],
     "fire_extinguisher": ["FIRE_EXT", "EXTINGUISHER", "FIRE-EXTINGUISHER"],
     "sprinkler": ["SPRINKLER"],
     "fire_alarm": ["FIRE_ALARM", "ALARM"],
     "fire_safety": ["FIRE", "FIRE-SAFETY", "FIRE_SAFETY"],
-    "hazard": ["HAZMAT", "HAZARD"],
+    "hazard": ["HAZMAT", "HAZARD", "DANGER", "CHEMICAL", "BIOHAZARD"],
+    "blocked": ["BLOCKED", "OBSTRUCTION", "BARRICADE", "BLOCK", "BLOCKED_CORRIDOR", "IMPASSABLE"],
     "furniture": ["FURNITURE"],
     "electrical": ["ELEC", "ELECTRICAL"],
     "plumbing": ["PLUMB", "PLUMBING"],
     "dimension": ["DIM", "DIMS", "DIMENSION"],
     "annotation": ["ANNO", "ANNOTATION", "TEXT"]
   },
-  "tactical_categories": ["wall", "door", "emergency_exit", "stair", "entrance", "hydrant", "fire_extinguisher", "sprinkler", "fire_alarm", "fire_safety", "hazard"]
+  "tactical_categories": [
+    "wall",
+    "door",
+    "emergency_exit",
+    "stair",
+    "entrance",
+    "hydrant",
+    "fire_extinguisher",
+    "sprinkler",
+    "fire_alarm",
+    "fire_safety",
+    "hazard",
+    "blocked"
+  ]
 }

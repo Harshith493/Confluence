@@ -1,28 +1,285 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PlanOps · Tactical Plan Desk</title><link rel="stylesheet" href="/styles.css"></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PlanOps · CAD to Tactical Plan Desk</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
 <body>
 <div class="app-shell">
-  <aside class="rail"><div class="brand-mark">P<span>+</span></div><div class="rail-rule"></div><button class="rail-btn active" title="Plan desk">⌂</button><button class="rail-btn" title="Plans">▤</button><button class="rail-btn" title="Reports">▧</button><div class="rail-bottom"><span class="online-dot"></span><span>OPS</span></div></aside>
+  <aside class="rail">
+    <div class="brand-mark">P<span>+</span></div>
+    <div class="rail-rule"></div>
+    <button id="railDesk" class="rail-btn active" title="Plan Overview">⌂</button>
+    <button id="railRoute" class="rail-btn" title="Tactical Route Planner">⚡</button>
+    <button id="railReport" class="rail-btn" title="Validation Reports">▧</button>
+    <div class="rail-bottom"><span class="online-dot"></span><span>OPS</span></div>
+  </aside>
+
   <main class="main">
-    <header class="topbar"><div class="crumb"><span>RESPONSE SYSTEMS</span><b>/</b><strong>TACTICAL PLAN DESK</strong></div><div class="top-right"><span class="secure"><i></i> LOCAL PROCESSING</span><span class="avatar">FD</span></div></header>
-    <section class="intro"><div><div class="eyebrow"><i></i> INCIDENT PREPARATION · BUILDING INTELLIGENCE</div><h1>Plan conversion desk</h1><p>Translate architectural CAD into a clear, response-ready floor plan.</p></div><div class="file-chip"><span class="file-icon">▤</span><div><strong id="fileName">NO PLAN LOADED</strong><small id="fileMeta">DXF · LOCAL COORDINATES PRESERVED</small></div><label class="replace-btn" for="fileInput">Upload DXF</label><input id="fileInput" type="file" accept=".dxf"></div></section>
-    <section class="workspace">
-      <div class="viewer-panel">
-        <div class="viewer-toolbar"><div class="mode-switch"><button id="fullMode" class="mode active">Full view <span id="fullCount">—</span></button><button id="tacticalMode" class="mode">Tactical view</button></div><div class="viewer-actions"><button id="fitBtn" class="icon-button" title="Fit to screen">⌗</button><button id="zoomOut" class="icon-button">−</button><span id="zoomLabel">100%</span><button id="zoomIn" class="icon-button">+</button></div></div>
-        <div id="canvasWrap" class="canvas-wrap"><canvas id="planCanvas"></canvas><div id="emptyState" class="empty-state"><div class="upload-symbol">↑</div><strong>Drop a floor plan to begin</strong><span>Upload a DXF drawing to inspect and classify its features.</span><label for="fileInput" class="primary-btn">Choose DXF file</label><small>LOCAL FILE · DXF FORMAT</small></div><div id="tacticalBanner" class="tactical-banner hidden"><b>▰ &nbsp; FIREFIGHTER TACTICAL VIEW</b><span>Displaying emergency-response-relevant features. No underlying data has been deleted.</span><span>Doors are highlighted and enlarged for visibility.</span></div><div id="selectionTag" class="selection-tag hidden"></div></div>
-        <div class="canvas-footer"><span><i class="coord-dot"></i><span id="coordLabel">READY · WAITING FOR PLAN</span></span><span id="unitsLabel">COORDINATE SYSTEM · LOCAL DXF</span></div>
+    <header class="topbar">
+      <div class="crumb">
+        <span>RESPONSE SYSTEMS</span><b>/</b><strong>TACTICAL PLAN DESK</strong>
       </div>
+      <div class="top-right">
+        <span class="secure"><i></i> LOCAL PROCESSING</span>
+        <span class="avatar">FD</span>
+      </div>
+    </header>
+
+    <section class="intro">
+      <div>
+        <div class="eyebrow"><i></i> INCIDENT PREPARATION · BUILDING INTELLIGENCE</div>
+        <h1>Tactical Plan &amp; Route Desk</h1>
+        <p>Translate architectural CAD into response-ready tactical geometry with real obstacle-aware pathfinding.</p>
+      </div>
+      <div class="file-chip">
+        <span class="file-icon">▤</span>
+        <div>
+          <strong id="fileName">NO PLAN LOADED</strong>
+          <small id="fileMeta">DXF · LOCAL COORDINATES PRESERVED</small>
+        </div>
+        <label class="replace-btn" for="fileInput">Upload DXF</label>
+        <input id="fileInput" type="file" accept=".dxf">
+      </div>
+    </section>
+
+    <section class="workspace">
+      <!-- Interactive Floor Plan Canvas -->
+      <div class="viewer-panel">
+        <div class="viewer-toolbar">
+          <div class="mode-switch">
+            <button id="fullMode" class="mode active">Full view <span id="fullCount">—</span></button>
+            <button id="tacticalMode" class="mode">Tactical view</button>
+          </div>
+          <div class="viewer-actions">
+            <button id="pickIndicator" class="route-pick-badge hidden">PICK ON CANVAS</button>
+            <button id="fitBtn" class="icon-button" title="Fit to screen">⌗</button>
+            <button id="zoomOut" class="icon-button" title="Zoom out">−</button>
+            <span id="zoomLabel">100%</span>
+            <button id="zoomIn" class="icon-button" title="Zoom in">+</button>
+          </div>
+        </div>
+
+        <div id="canvasWrap" class="canvas-wrap">
+          <canvas id="planCanvas"></canvas>
+          <div id="emptyState" class="empty-state">
+            <div class="upload-symbol">↑</div>
+            <strong>Drop a CAD floor plan to begin</strong>
+            <span>Upload a DXF drawing to inspect features and compute emergency routes.</span>
+            <label for="fileInput" class="primary-btn">Choose DXF file</label>
+            <small>LOCAL PROCESSING · ASCII DXF</small>
+          </div>
+          <div id="tacticalBanner" class="tactical-banner hidden">
+            <b>▰ &nbsp; FIREFIGHTER TACTICAL VIEW</b>
+            <span>Displaying emergency-response-relevant features. No underlying data has been deleted.</span>
+            <span>Doors, exits, stairs, hydrants, hazards, and blocked corridors are highlighted.</span>
+          </div>
+          <div id="selectionTag" class="selection-tag hidden"></div>
+        </div>
+
+        <div class="canvas-footer">
+          <span><i class="coord-dot"></i><span id="coordLabel">READY · WAITING FOR PLAN</span></span>
+          <span id="unitsLabel">COORDINATE SYSTEM · LOCAL DXF</span>
+        </div>
+      </div>
+
+      <!-- Side Control Panel with Overview and Route Planning Tabs -->
       <aside class="side-panel">
-        <div class="panel-head"><div><span class="panel-kicker">PLAN OVERVIEW</span><h2>Conversion status</h2></div><span id="statusPill" class="status-pill idle"><i></i> STANDBY</span></div>
-        <div class="stats-grid"><div class="stat"><span>ENTITIES</span><strong id="entityCount">—</strong><small>in source drawing</small></div><div class="stat"><span>TACTICAL</span><strong id="tacticalCount">—</strong><small>response relevant</small></div></div>
-        <div class="progress-wrap"><div class="progress-label"><span>SUPPORTED ENTITIES</span><b id="supportPct">—</b></div><div class="progress-track"><div id="supportBar"></div></div><small id="supportSub">Awaiting source plan</small></div>
-        <div class="section-heading"><span>CATEGORY VISIBILITY</span><button id="allToggle">ALL ON</button></div><div id="categories" class="category-list"><div class="empty-note">Upload a DXF to inspect categories.</div></div>
-        <div class="data-preserved"><span class="shield">✓</span><div><strong>Underlying data preserved</strong><small>View filters never alter the complete dataset.</small></div><b>YES</b></div>
-        <div class="panel-bottom"><button id="validateBtn" class="secondary-btn" disabled><span>⟳</span> Run round-trip check</button><div class="download-row"><button id="geoBtn" disabled>↓ &nbsp; GeoJSON</button><button id="dxfBtn" disabled>↓ &nbsp; Rebuilt DXF</button></div></div>
+        <div class="panel-tab-bar">
+          <button id="tabOverviewBtn" class="tab-btn active">Overview</button>
+          <button id="tabRouteBtn" class="tab-btn">⚡ Route Planner</button>
+        </div>
+
+        <!-- Tab 1: Conversion Status & Overview -->
+        <div id="tabOverviewView" class="tab-content active">
+          <div class="panel-head">
+            <div>
+              <span class="panel-kicker">PLAN OVERVIEW</span>
+              <h2>Conversion status</h2>
+            </div>
+            <span id="statusPill" class="status-pill idle"><i></i> STANDBY</span>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat">
+              <span>ENTITIES</span>
+              <strong id="entityCount">—</strong>
+              <small>in source drawing</small>
+            </div>
+            <div class="stat">
+              <span>TACTICAL</span>
+              <strong id="tacticalCount">—</strong>
+              <small>response relevant</small>
+            </div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-label">
+              <span>SUPPORTED ENTITIES</span>
+              <b id="supportPct">—</b>
+            </div>
+            <div class="progress-track"><div id="supportBar"></div></div>
+            <small id="supportSub">Awaiting source plan</small>
+          </div>
+
+          <div class="section-heading">
+            <span>CATEGORY VISIBILITY</span>
+            <button id="allToggle">ALL ON</button>
+          </div>
+          <div id="categories" class="category-list">
+            <div class="empty-note">Upload a DXF to inspect categories.</div>
+          </div>
+
+          <div class="data-preserved">
+            <span class="shield">✓</span>
+            <div>
+              <strong>Underlying data preserved</strong>
+              <small>View filters never alter the complete dataset.</small>
+            </div>
+            <b>YES</b>
+          </div>
+
+          <div class="panel-bottom">
+            <button id="validateBtn" class="secondary-btn" disabled><span>⟳</span> Run round-trip check</button>
+            <div class="download-row">
+              <button id="geoBtn" disabled>↓ &nbsp; GeoJSON</button>
+              <button id="dxfBtn" disabled>↓ &nbsp; Rebuilt DXF</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Real Route Planning Interface -->
+        <div id="tabRouteView" class="tab-content">
+          <div class="panel-head">
+            <div>
+              <span class="panel-kicker">TACTICAL EVACUATION &amp; ENTRY</span>
+              <h2>Route Planner</h2>
+            </div>
+            <span id="routeStatusPill" class="status-pill idle"><i></i> READY</span>
+          </div>
+
+          <div class="route-form">
+            <!-- Start Point -->
+            <div class="form-group">
+              <div class="form-label-row">
+                <label for="startCoordDisplay">START LOCATION</label>
+                <button id="pickStartBtn" class="pill-action-btn" title="Click on the canvas to select start point">📍 Pick on Canvas</button>
+              </div>
+              <div class="coord-input-row">
+                <input id="startCoordDisplay" type="text" placeholder="e.g. 3000, 2500" readonly>
+                <button id="startPresetBtn" class="preset-btn" title="Set to default start room">Room 1</button>
+              </div>
+            </div>
+
+            <!-- Destination Selection -->
+            <div class="form-group">
+              <div class="form-label-row">
+                <label for="destSelect">DESTINATION / EXIT</label>
+                <button id="pickDestBtn" class="pill-action-btn" title="Click on the canvas to select custom destination">📍 Pick on Canvas</button>
+              </div>
+              <select id="destSelect" class="form-select">
+                <option value="nearest_exit">⭐ Nearest Reachable Exit (Auto-select)</option>
+              </select>
+            </div>
+
+            <!-- Hazard & Obstacle Policy -->
+            <div class="form-group">
+              <label for="hazardModeSelect">HAZARD NAVIGATION POLICY</label>
+              <select id="hazardModeSelect" class="form-select">
+                <option value="avoid">Avoid Hazards (Higher movement cost)</option>
+                <option value="block">Block Hazards (Treat as impassable)</option>
+                <option value="ignore">Ignore Hazards (Shortest path only)</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="hazardPenaltyInput">HAZARD PENALTY</label>
+                <input id="hazardPenaltyInput" type="number" min="1" max="50" step="0.5" value="5.0" class="form-input">
+              </div>
+              <div class="form-group flex-1">
+                <label>OBSTACLES</label>
+                <div class="static-pill">Walls &amp; Blocked Passages Respected</div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="route-btn-row">
+              <button id="planRouteBtn" class="primary-route-btn" disabled>⚡ Calculate Tactical Route</button>
+              <button id="clearRouteBtn" class="clear-route-btn" disabled>✕ Clear</button>
+            </div>
+
+            <!-- Route Telemetry Output -->
+            <div id="routeResultsCard" class="route-results-card hidden">
+              <div class="route-metric-grid">
+                <div class="route-metric">
+                  <span>DISTANCE</span>
+                  <strong id="routeDistanceVal">—</strong>
+                </div>
+                <div class="route-metric">
+                  <span>ROUTING COST</span>
+                  <strong id="routeCostVal">—</strong>
+                </div>
+              </div>
+
+              <div id="routeTargetName" class="route-target-banner">DESTINATION REACHED</div>
+
+              <div id="routeWarnings" class="route-warning-box hidden"></div>
+
+              <details class="instructions-accordion" open>
+                <summary>Step-by-step route directions (<span id="instructionCount">0</span>)</summary>
+                <ol id="routeInstructionsList" class="instructions-list"></ol>
+              </details>
+            </div>
+
+            <div id="routeErrorMsg" class="route-error-banner hidden"></div>
+          </div>
+        </div>
       </aside>
     </section>
-    <section class="lower-grid"><div class="lower-card"><div class="lower-head"><div><span class="panel-kicker">FEATURE INSPECTOR</span><h3>Selected feature</h3></div><span class="muted" id="featureOrdinal">NO SELECTION</span></div><div id="featureDetails" class="detail-grid"><span class="empty-note">Select an entity on the plan to inspect its source properties.</span></div></div><div class="lower-card report-card"><div class="lower-head"><div><span class="panel-kicker">ROUND-TRIP VALIDATION</span><h3>Fidelity report</h3></div><span id="validationPill" class="status-pill idle">NOT RUN</span></div><div id="reportBody" class="report-body"><div class="report-empty"><span>⟳</span><p>Reconstruct from the complete GeoJSON, parse again, and compare measured geometry and semantics.</p></div></div></div></section>
-    <footer class="disclaimer">BUILDATHON PROTOTYPE · NOT A CERTIFIED LIFE-SAFETY OR EMERGENCY-RESPONSE SYSTEM <span>Data stays on this server session · no georeference assumed</span></footer>
+
+    <!-- Lower Grid: Feature Inspector & Round-Trip Validation -->
+    <section class="lower-grid">
+      <div class="lower-card">
+        <div class="lower-head">
+          <div>
+            <span class="panel-kicker">FEATURE INSPECTOR</span>
+            <h3>Selected feature</h3>
+          </div>
+          <span class="muted" id="featureOrdinal">NO SELECTION</span>
+        </div>
+        <div id="featureDetails" class="detail-grid">
+          <span class="empty-note">Select an entity on the plan to inspect its source properties.</span>
+        </div>
+      </div>
+
+      <div class="lower-card report-card">
+        <div class="lower-head">
+          <div>
+            <span class="panel-kicker">ROUND-TRIP VALIDATION</span>
+            <h3>Fidelity report</h3>
+          </div>
+          <span id="validationPill" class="status-pill idle">NOT RUN</span>
+        </div>
+        <div id="reportBody" class="report-body">
+          <div class="report-empty">
+            <span>⟳</span>
+            <p>Reconstruct from the complete GeoJSON, parse again, and compare measured geometry and semantics.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="disclaimer">
+      BUILDATHON PROTOTYPE · NOT A CERTIFIED LIFE-SAFETY OR EMERGENCY-RESPONSE SYSTEM
+      <span>Calculated from available CAD geometry and configured constraints · Local coordinates</span>
+    </footer>
   </main>
-</div><div id="toast" class="toast"></div><script src="/app.js"></script></body></html>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>

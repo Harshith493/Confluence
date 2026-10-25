@@ -8,6 +8,7 @@ OUTPUT = ROOT / "outputs" / "planops-cad-to-tactical.zip"
 
 def main():
     required = [ROOT / "app" / "main.py", ROOT / "app" / "converter.py",
+                ROOT / "app" / "routing.py",
                 ROOT / "web" / "index.html", ROOT / "web" / "app.js",
                 ROOT / "web" / "styles.css", ROOT / "app" / "classification.json",
                 ROOT / "README.md"]
