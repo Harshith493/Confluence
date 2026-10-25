@@ -97,6 +97,8 @@ def extract_routing_features(collection: dict[str, Any]) -> dict[str, Any]:
     exits: list[dict[str, Any]] = []
     entrances: list[dict[str, Any]] = []
     stairs: list[dict[str, Any]] = []
+    elevators: list[dict[str, Any]] = []
+    aeds: list[dict[str, Any]] = []
 
     texts: list[tuple[tuple[float, float], str]] = []
     for f in features:
@@ -233,6 +235,36 @@ def extract_routing_features(collection: dict[str, Any]) -> dict[str, Any]:
                 "properties": p,
             })
 
+        # 8. Elevators
+        elif cat == "elevator" or "ELEV" in layer or "LIFT" in layer:
+            if gtype == "Point":
+                pt = (float(coords[0]), float(coords[1]))
+            else:
+                pts = coords if gtype == "LineString" else coords[0]
+                pt = (sum(x[0] for x in pts) / len(pts), sum(x[1] for x in pts) / len(pts))
+            elevators.append({
+                "center": pt,
+                "label": p.get("display_name", "Elevator"),
+                "handle": p.get("source_handle", "ELEV"),
+                "layer": layer,
+                "properties": p,
+            })
+
+        # 9. AEDs
+        elif cat == "aed" or "AED" in layer or "DEFIB" in layer:
+            if gtype == "Point":
+                pt = (float(coords[0]), float(coords[1]))
+            else:
+                pts = coords if gtype == "LineString" else coords[0]
+                pt = (sum(x[0] for x in pts) / len(pts), sum(x[1] for x in pts) / len(pts))
+            aeds.append({
+                "center": pt,
+                "label": p.get("display_name", "AED"),
+                "handle": p.get("source_handle", "AED"),
+                "layer": layer,
+                "properties": p,
+            })
+
     # Associate nearby text annotations with exits for meaningful labels
     for ex in exits:
         for tpos, tstr in texts:
@@ -252,6 +284,8 @@ def extract_routing_features(collection: dict[str, Any]) -> dict[str, Any]:
         "exits": exits,
         "entrances": entrances,
         "stairs": stairs,
+        "elevators": elevators,
+        "aeds": aeds,
         "bbox": bbox,
         "units_code": units_code,
     }
@@ -972,7 +1006,10 @@ def plan_route(
     multi_floor_info = {
         "supported": False,
         "current_floor": "Single-floor floor plan",
-        "vertical_connectors": [s.get("center") for s in routing_data["stairs"]],
+        "vertical_connectors": [
+            *[{"type": "stair", "coordinates": s.get("center")} for s in routing_data["stairs"]],
+            *[{"type": "elevator", "coordinates": e.get("center")} for e in routing_data.get("elevators", [])],
+        ],
         "message": "Single-floor routing active. Multi-floor routing requires distinct elevation/floor layers with verified vertical connectors.",
     }
 

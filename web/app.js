@@ -21,6 +21,8 @@ const colors = {
   wall: '#455e52',
   door: '#087f9e',
   stair: '#7187a3',
+  elevator: '#00897b',
+  aed: '#e91e63',
   emergency_exit: '#d45242',
   entrance: '#ae8a3f',
   hydrant: '#dc6650',
@@ -37,6 +39,12 @@ const colors = {
   annotation: '#78907e',
   other: '#9ba49f',
 };
+
+function categoryDisplayName(cat) {
+  if (cat === 'aed') return 'AED';
+  if (cat === 'elevator') return 'Elevator';
+  return cat.replaceAll('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
 
 function featPoints(f) {
   const g = f.geometry;
@@ -102,7 +110,9 @@ function draw() {
     const door = p.category === 'door';
     const isBlocked = p.category === 'blocked';
     const isHazard = p.category === 'hazard';
-    const emphasis = mode === 'tactical' && (door || isBlocked || isHazard);
+    const isElevator = p.category === 'elevator';
+    const isAed = p.category === 'aed';
+    const emphasis = mode === 'tactical' && (door || isBlocked || isHazard || isElevator || isAed);
 
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
@@ -138,10 +148,27 @@ function draw() {
         ctx.arc(x, y, r * 1.4, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
+      } else if (isAed) {
+        // Draw distinct AED medical beacon halo
+        ctx.save();
+        ctx.fillStyle = mode === 'tactical' ? 'rgba(233, 30, 99, 0.28)' : 'rgba(233, 30, 99, 0.16)';
+        ctx.beginPath();
+        ctx.arc(x, y, r * 1.6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      } else if (isElevator) {
+        // Draw distinct elevator car marker
+        ctx.save();
+        ctx.fillStyle = mode === 'tactical' ? 'rgba(0, 137, 123, 0.25)' : 'rgba(0, 137, 123, 0.15)';
+        ctx.fillRect(x - r * 1.2, y - r * 1.2, r * 2.4, r * 2.4);
+        ctx.strokeStyle = colors.elevator;
+        ctx.lineWidth = emphasis ? 2.0 : 1.2;
+        ctx.strokeRect(x - r * 1.2, y - r * 1.2, r * 2.4, r * 2.4);
+        ctx.restore();
       }
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
-      if (p.radius || isHazard) {
+      if (p.radius || isHazard || isAed) {
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.stroke();
@@ -150,7 +177,7 @@ function draw() {
       pts.forEach((q, i) => i ? ctx.lineTo(...q) : ctx.moveTo(...q));
       if (f.geometry.type === 'Polygon') {
         ctx.closePath();
-        ctx.globalAlpha = isBlocked ? 0.35 : 0.08;
+        ctx.globalAlpha = isBlocked ? 0.35 : isElevator ? 0.22 : 0.08;
         ctx.fill();
         ctx.globalAlpha = 1;
       }
@@ -320,7 +347,7 @@ function renderCategories() {
       <label class="category-row">
         <input type="checkbox" data-cat="${cat}" ${hidden.has(cat) ? '' : 'checked'}>
         <i class="category-swatch" style="--swatch:${colors[cat] || colors.other}"></i>
-        <span>${cat.replaceAll('_', ' ')}</span>
+        <span>${categoryDisplayName(cat)}</span>
         <small>${n}</small>
       </label>
     `).join('') || '<span class="empty-note">No model-space entities found.</span>';

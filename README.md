@@ -20,8 +20,8 @@ PlanOps translates architectural CAD (DXF) floor plans into a semantic, response
                        │
           ┌────────────▼───────────┐
           │ Semantic Classification│ ◄── app/classification.json
-          │  (Walls, Doors, Exits, │
-          │   Hazards, Blocked)    │
+          │ (Walls, Doors, Exits,  │
+          │  Elevators, AEDs, etc) │
           └────────────┬───────────┘
                        │
          ┌─────────────┴─────────────┐
@@ -84,7 +84,7 @@ The engine inspects elevation (Z coordinates), floor identifiers, and vertical c
 
 The dashboard provides an operational workspace:
 - **Interactive Canvas**: Pan (drag), zoom (wheel / buttons), and fit-to-screen (`⌗`).
-- **Tactical View Filter**: Highlights structural walls, doors, stairs, hydrants, hazards, and blocked corridors with enhanced contrast and glow.
+- **Tactical View Filter**: Highlights structural walls, doors, elevators, AEDs, stairs, hydrants, hazards, and blocked corridors with enhanced contrast and glow.
 - **Canvas Coordinate Picking**:
   - Click **"📍 Pick on Canvas"** next to Start or Destination.
   - Click anywhere on the floor plan to set coordinates directly in CAD space.

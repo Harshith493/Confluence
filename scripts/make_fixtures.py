@@ -5,11 +5,11 @@ import ezdxf
 ROOT = Path(__file__).parent.parent / "fixtures"
 
 BUILDINGS = {
-    "office": [("A-WALL", "wall"), ("DOORS", "door"), ("STAIRS", "stair"), ("FIRE_EXT", "fire_extinguisher"), ("FURNITURE", "furniture"), ("ANNO", "annotation")],
-    "hospital": [("WALL", "wall"), ("DOOR", "door"), ("EMERGENCY_EXIT", "emergency_exit"), ("SPRINKLER", "sprinkler"), ("HYDRANT", "hydrant"), ("MEDICAL_EQUIP", "other")],
-    "school": [("WALL", "wall"), ("ENTRY", "entrance"), ("STAIRWELL", "stair"), ("FIRE_ALARM", "fire_alarm"), ("HAZMAT", "hazard"), ("FURNITURE", "furniture")],
-    "apartment": [("A-WALL", "wall"), ("DOORS", "door"), ("EXIT", "emergency_exit"), ("PLUMB", "plumbing"), ("ELEC", "electrical"), ("DIM", "dimension")],
-    "commercial": [("WALL", "wall"), ("ENTRANCE", "entrance"), ("FIRE-HYDRANT", "hydrant"), ("FIRE_EXT", "fire_extinguisher"), ("SPRINKLER", "sprinkler"), ("FURNITURE", "furniture")],
+    "office": [("A-WALL", "wall"), ("DOORS", "door"), ("STAIRS", "stair"), ("A-ELEV", "elevator"), ("AED", "aed"), ("FIRE_EXT", "fire_extinguisher"), ("FURNITURE", "furniture"), ("ANNO", "annotation")],
+    "hospital": [("WALL", "wall"), ("DOOR", "door"), ("EMERGENCY_EXIT", "emergency_exit"), ("SPRINKLER", "sprinkler"), ("HYDRANT", "hydrant"), ("ELEVATOR", "elevator"), ("DEFIBRILLATOR", "aed"), ("MEDICAL_EQUIP", "other")],
+    "school": [("WALL", "wall"), ("ENTRY", "entrance"), ("STAIRWELL", "stair"), ("A-ELEV", "elevator"), ("AED_DEVICE", "aed"), ("FIRE_ALARM", "fire_alarm"), ("HAZMAT", "hazard"), ("FURNITURE", "furniture")],
+    "apartment": [("A-WALL", "wall"), ("DOORS", "door"), ("EXIT", "emergency_exit"), ("LIFT", "elevator"), ("PLUMB", "plumbing"), ("ELEC", "electrical"), ("DIM", "dimension")],
+    "commercial": [("WALL", "wall"), ("ENTRANCE", "entrance"), ("VERTICAL_TRANSPORT", "elevator"), ("FIRE-HYDRANT", "hydrant"), ("FIRE_EXT", "fire_extinguisher"), ("SPRINKLER", "sprinkler"), ("FURNITURE", "furniture")],
 }
 
 
@@ -25,13 +25,18 @@ def make_tactical_demo(root: Path):
     - North bypass containing a chemical hazard (HAZMAT at (8000, 8250), radius 1000, blocking North passage).
     - Clear South bypass service hallway (X=5500..10500, Y=500..1500).
     - Isolated Vault room (X=1000-4000, Y=7000-9500) with no doors (unreachable test).
+    - Elevator (A-ELEV) in East wing at (14000, 2500).
+    - AED device (AED) in Central Corridor at (4500, 5200).
     - Start location in Room 1 at (3000, 2500).
     - Annex at (500, 2500) accessible only via Central Corridor (X=1000 wall blocks direct passage from Room 1).
     """
     doc = ezdxf.new("R2010")
     msp = doc.modelspace()
 
-    layers = ["A-WALL", "A-DOOR", "EMERGENCY_EXIT", "ENTRANCE", "HAZMAT", "BLOCKED", "STAIRS", "HYDRANT", "ANNO"]
+    layers = [
+        "A-WALL", "A-DOOR", "EMERGENCY_EXIT", "ENTRANCE", "HAZMAT",
+        "BLOCKED", "STAIRS", "HYDRANT", "A-ELEV", "AED", "ANNO"
+    ]
     for l in layers:
         if l not in doc.layers:
             doc.layers.new(l)
@@ -121,7 +126,6 @@ def make_tactical_demo(root: Path):
     msp.add_line((7000, 6000), (8000, 4000), dxfattribs={"layer": "BLOCKED"})
 
     # 9. Hazard in North Bypass Corridor (X=8000, Y=8250, radius=1000)
-    # Spans entire corridor width (7500..9000), forcing hazard traversal if North bypass is used
     msp.add_circle((8000, 8250), 1000, dxfattribs={"layer": "HAZMAT"})
 
     # 10. Emergency Exits
@@ -133,9 +137,17 @@ def make_tactical_demo(root: Path):
     msp.add_circle((16000, 5000), 250, dxfattribs={"layer": "EMERGENCY_EXIT"})
     msp.add_text("EXIT B", dxfattribs={"layer": "ANNO", "insert": (15300, 5200), "height": 200})
 
-    # 11. Tactical Equipment & Annotations
+    # 11. Tactical Equipment: Hydrant, Stairs, Elevator, AED
     msp.add_circle((2000, 5000), 120, dxfattribs={"layer": "HYDRANT"})
     msp.add_lwpolyline([(500, 500), (1000, 500), (1000, 1000), (500, 1000)], close=True, dxfattribs={"layer": "STAIRS"})
+    # Elevator at (13500..14500, 2000..3000) in Room 2 wing
+    msp.add_lwpolyline([(13500, 2000), (14500, 2000), (14500, 3000), (13500, 3000)], close=True, dxfattribs={"layer": "A-ELEV"})
+    msp.add_text("ELEVATOR 1", dxfattribs={"layer": "ANNO", "insert": (13600, 2500), "height": 160})
+    # AED Station in central corridor at (4500, 5200)
+    msp.add_circle((4500, 5200), 120, dxfattribs={"layer": "AED"})
+    msp.add_text("AED STATION", dxfattribs={"layer": "ANNO", "insert": (4300, 5400), "height": 140})
+
+    # 12. Annotations
     msp.add_text("ROOM 1 - COMMAND (START)", dxfattribs={"layer": "ANNO", "insert": (1500, 2500), "height": 180})
     msp.add_text("CORRIDOR (BLOCKED AHEAD)", dxfattribs={"layer": "ANNO", "insert": (6800, 5000), "height": 160})
     msp.add_text("VAULT (ISOLATED)", dxfattribs={"layer": "ANNO", "insert": (1500, 8000), "height": 180})
@@ -162,9 +174,9 @@ def main():
             x, y = 900 + i * 1650, 700 + (i % 3) * 1850
             if category == "door":
                 msp.add_arc((x, y), 350, 0, 90, dxfattribs={"layer": layer})
-            elif category == "stair":
+            elif category in {"stair", "elevator"}:
                 msp.add_lwpolyline([(x, y), (x+900, y), (x+900, y+700), (x, y+700)], close=True, dxfattribs={"layer": layer})
-            elif category in {"hydrant", "fire_extinguisher", "sprinkler", "fire_alarm", "entrance", "emergency_exit", "hazard"}:
+            elif category in {"hydrant", "fire_extinguisher", "sprinkler", "fire_alarm", "entrance", "emergency_exit", "hazard", "aed"}:
                 msp.add_circle((x, y), 110, dxfattribs={"layer": layer})
             elif category == "annotation":
                 msp.add_text(f"{name.upper()} LEVEL 1", dxfattribs={"layer": layer, "insert": (x, y), "height": 160})

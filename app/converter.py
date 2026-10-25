@@ -4,6 +4,7 @@ from __future__ import annotations
 import io
 import json
 import math
+import re
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -16,15 +17,24 @@ CATEGORIES = {key: tuple(value) for key, value in _CLASSIFICATION["categories"].
 TACTICAL = set(_CLASSIFICATION["tactical_categories"])
 SUPPORTED = {"LINE", "LWPOLYLINE", "POLYLINE", "CIRCLE", "ARC", "POINT", "TEXT", "MTEXT"}
 MAX_DXF_SIZE = 25 * 1024 * 1024  # 25 MB limit for safety
+DISPLAY_NAMES = {
+    "aed": "AED",
+    "elevator": "Elevator",
+}
 
 
 def classify(layer: str, entity: str, rules: dict[str, tuple[str, ...]] | None = None) -> str:
     layer_str = str(layer or "0")
     entity_str = str(entity or "")
     text = f"{layer_str} {entity_str}".upper().replace(" ", "_").replace("-", "_")
-    for category, aliases in (rules or CATEGORIES).items():
-        if any(alias.replace("-", "_") in text for alias in aliases):
-            return category
+    active_rules = rules if rules is not None else CATEGORIES
+    for category, aliases in active_rules.items():
+        for alias in aliases:
+            a_norm = alias.upper().replace(" ", "_").replace("-", "_")
+            # Boundary check to avoid substring collisions (e.g. SHADED -> AED, ELEVATION -> ELEV)
+            pat = rf"(?<![A-Z0-9]){re.escape(a_norm)}(?![A-Z])"
+            if re.search(pat, text):
+                return category
     return "other"
 
 
@@ -42,7 +52,7 @@ def _feature(entity: Any) -> dict[str, Any]:
         "source_entity": kind,
         "source_handle": entity.dxf.get("handle"),
         "tactical": cat in TACTICAL,
-        "display_name": cat.replace("_", " ").title(),
+        "display_name": DISPLAY_NAMES.get(cat, cat.replace("_", " ").title()),
         "classification_source": "layer_rule" if cat != "other" else "unclassified",
         "confidence": "high" if cat != "other" else "uncertain"
     }

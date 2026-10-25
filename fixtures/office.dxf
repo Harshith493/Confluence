@@ -489,7 +489,7 @@ $SKPOLY
   9
 $TDCREATE
  40
-2461339.6102430555
+2461339.629571759
   9
 $TDUCREATE
  40
@@ -497,7 +497,7 @@ $TDUCREATE
   9
 $TDUPDATE
  40
-2461339.6102430555
+2461339.629571759
   9
 $TDUUPDATE
  40
@@ -549,7 +549,7 @@ $SPLINESEGS
   9
 $HANDSEED
   5
-43
+47
   9
 $SURFTAB1
  70
@@ -929,11 +929,11 @@ $PSTYLEMODE
   9
 $FINGERPRINTGUID
   2
-{E5D2CA3B-A168-4868-8BB6-D58FD2522F8F}
+{65B381E5-631A-4B52-8B4E-DC7FF5E99CF3}
   9
 $VERSIONGUID
   2
-{F50C2C05-D364-4F0D-B094-5DCAE66FAE01}
+{D937B8BC-2D74-473E-B8B1-37F934BE37F5}
   9
 $EXTNAMES
 290
@@ -1549,7 +1549,7 @@ LAYER
 100
 AcDbSymbolTable
  70
-8
+10
   0
 LAYER
   5
@@ -1683,7 +1683,7 @@ AcDbSymbolTableRecord
 100
 AcDbLayerTableRecord
   2
-FIRE_EXT
+A-ELEV
  70
 0
  62
@@ -1707,7 +1707,7 @@ AcDbSymbolTableRecord
 100
 AcDbLayerTableRecord
   2
-FURNITURE
+AED
  70
 0
  62
@@ -1724,6 +1724,54 @@ Continuous
 LAYER
   5
 34
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+FIRE_EXT
+ 70
+0
+ 62
+7
+  6
+Continuous
+370
+-3
+390
+13
+347
+21
+  0
+LAYER
+  5
+35
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+FURNITURE
+ 70
+0
+ 62
+7
+  6
+Continuous
+370
+-3
+390
+13
+347
+21
+  0
+LAYER
+  5
+36
 330
 1
 100
@@ -1845,7 +1893,7 @@ ACAD
   0
 APPID
   5
-40
+44
 330
 3
 100
@@ -1859,7 +1907,7 @@ HATCHBACKGROUNDCOLOR
   0
 APPID
   5
-41
+45
 330
 3
 100
@@ -2169,54 +2217,6 @@ ENTITIES
   0
 LINE
   5
-35
-330
-17
-100
-AcDbEntity
-  8
-A-WALL
-100
-AcDbLine
- 10
-0.0
- 20
-0.0
- 30
-0.0
- 11
-12000.0
- 21
-0.0
- 31
-0.0
-  0
-LINE
-  5
-36
-330
-17
-100
-AcDbEntity
-  8
-A-WALL
-100
-AcDbLine
- 10
-12000.0
- 20
-0.0
- 30
-0.0
- 11
-12000.0
- 21
-8000.0
- 31
-0.0
-  0
-LINE
-  5
 37
 330
 17
@@ -2227,15 +2227,15 @@ A-WALL
 100
 AcDbLine
  10
-12000.0
+0.0
  20
-8000.0
+0.0
  30
 0.0
  11
-0.0
+12000.0
  21
-8000.0
+0.0
  31
 0.0
   0
@@ -2251,6 +2251,54 @@ A-WALL
 100
 AcDbLine
  10
+12000.0
+ 20
+0.0
+ 30
+0.0
+ 11
+12000.0
+ 21
+8000.0
+ 31
+0.0
+  0
+LINE
+  5
+39
+330
+17
+100
+AcDbEntity
+  8
+A-WALL
+100
+AcDbLine
+ 10
+12000.0
+ 20
+8000.0
+ 30
+0.0
+ 11
+0.0
+ 21
+8000.0
+ 31
+0.0
+  0
+LINE
+  5
+3A
+330
+17
+100
+AcDbEntity
+  8
+A-WALL
+100
+AcDbLine
+ 10
 0.0
  20
 8000.0
@@ -2265,7 +2313,7 @@ AcDbLine
   0
 LINE
   5
-39
+3B
 330
 17
 100
@@ -2289,7 +2337,7 @@ AcDbLine
   0
 LINE
   5
-3A
+3C
 330
 17
 100
@@ -2313,7 +2361,7 @@ AcDbLine
   0
 ARC
   5
-3B
+3D
 330
 17
 100
@@ -2339,7 +2387,7 @@ AcDbArc
   0
 LWPOLYLINE
   5
-3C
+3E
 330
 17
 100
@@ -2369,9 +2417,61 @@ AcDbPolyline
  20
 3250.0
   0
+LWPOLYLINE
+  5
+3F
+330
+17
+100
+AcDbEntity
+  8
+A-ELEV
+100
+AcDbPolyline
+ 90
+4
+ 70
+1
+ 10
+4200.0
+ 20
+4400.0
+ 10
+5100.0
+ 20
+4400.0
+ 10
+5100.0
+ 20
+5100.0
+ 10
+4200.0
+ 20
+5100.0
+  0
 CIRCLE
   5
-3D
+40
+330
+17
+100
+AcDbEntity
+  8
+AED
+100
+AcDbCircle
+ 10
+5850.0
+ 20
+700.0
+ 30
+0.0
+ 40
+110.0
+  0
+CIRCLE
+  5
+41
 330
 17
 100
@@ -2381,9 +2481,9 @@ FIRE_EXT
 100
 AcDbCircle
  10
-4200.0
+7500.0
  20
-4400.0
+2550.0
  30
 0.0
  40
@@ -2391,7 +2491,7 @@ AcDbCircle
   0
 LWPOLYLINE
   5
-3E
+42
 330
 17
 100
@@ -2405,25 +2505,25 @@ AcDbPolyline
  70
 1
  10
-5850.0
+9150.0
  20
-700.0
+4400.0
  10
-6270.0
+9570.0
  20
-700.0
+4400.0
  10
-6270.0
+9570.0
  20
-960.0
+4660.0
  10
-5850.0
+9150.0
  20
-960.0
+4660.0
   0
 TEXT
   5
-3F
+43
 330
 17
 100
@@ -2433,9 +2533,9 @@ ANNO
 100
 AcDbText
  10
-7500.0
+10800.0
  20
-2550.0
+700.0
  30
 0.0
  40
@@ -3435,7 +3535,7 @@ CREATED_BY_EZDXF
   3
 WRITTEN_BY_EZDXF
 350
-42
+46
   0
 DICTIONARYVAR
   5
@@ -3447,11 +3547,11 @@ DictionaryVariables
 280
 0
   1
-1.4.5 @ 2026-10-25T09:08:45.474889+00:00
+1.4.5 @ 2026-10-25T09:36:35.090048+00:00
   0
 DICTIONARYVAR
   5
-42
+46
 330
 2D
 100
@@ -3459,7 +3559,7 @@ DictionaryVariables
 280
 0
   1
-1.4.5 @ 2026-10-25T09:08:45.476232+00:00
+1.4.5 @ 2026-10-25T09:36:35.091560+00:00
   0
 ENDSEC
   0

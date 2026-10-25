@@ -1,5 +1,23 @@
 {
   "categories": {
+    "elevator": [
+      "ELEVATOR",
+      "ELEVATORS",
+      "LIFT",
+      "LIFTS",
+      "ELEV",
+      "A-ELEV",
+      "A-ELEVATOR",
+      "VERTICAL_TRANSPORT"
+    ],
+    "aed": [
+      "AED",
+      "AED_DEVICE",
+      "DEFIBRILLATOR",
+      "AUTOMATED_EXTERNAL_DEFIBRILLATOR",
+      "A-AED",
+      "EMERGENCY_DEFIBRILLATOR"
+    ],
     "wall": ["WALL", "A-WALL", "WALLS", "BARRIER", "WALL-EXTR", "WALL-INTR", "PARTITION"],
     "door": ["DOOR", "DOORS", "A-DOOR"],
     "stair": ["STAIR", "STAIRS", "STAIRWELL"],
@@ -21,6 +39,8 @@
   "tactical_categories": [
     "wall",
     "door",
+    "elevator",
+    "aed",
     "emergency_exit",
     "stair",
     "entrance",
