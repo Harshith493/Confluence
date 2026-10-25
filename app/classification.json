@@ -1,0 +1,21 @@
+{
+  "categories": {
+    "wall": ["WALL", "A-WALL", "WALLS", "BARRIER"],
+    "door": ["DOOR", "DOORS"],
+    "stair": ["STAIR", "STAIRS", "STAIRWELL"],
+    "emergency_exit": ["EXIT", "EMERGENCY_EXIT", "FIRE_EXIT"],
+    "entrance": ["ENTRANCE", "ENTRY"],
+    "hydrant": ["HYDRANT", "FIRE-HYDRANT", "FIRE_HYDRANT"],
+    "fire_extinguisher": ["FIRE_EXT", "EXTINGUISHER", "FIRE-EXTINGUISHER"],
+    "sprinkler": ["SPRINKLER"],
+    "fire_alarm": ["FIRE_ALARM", "ALARM"],
+    "fire_safety": ["FIRE", "FIRE-SAFETY", "FIRE_SAFETY"],
+    "hazard": ["HAZMAT", "HAZARD"],
+    "furniture": ["FURNITURE"],
+    "electrical": ["ELEC", "ELECTRICAL"],
+    "plumbing": ["PLUMB", "PLUMBING"],
+    "dimension": ["DIM", "DIMS", "DIMENSION"],
+    "annotation": ["ANNO", "ANNOTATION", "TEXT"]
+  },
+  "tactical_categories": ["wall", "door", "emergency_exit", "stair", "entrance", "hydrant", "fire_extinguisher", "sprinkler", "fire_alarm", "fire_safety", "hazard"]
+}

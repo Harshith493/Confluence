@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "planops-cad-tactical"
+version = "0.1.0"
+description = "DXF to tactical floor plan conversion prototype"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.34,<1",
+  "ezdxf>=1.4,<2",
+  "python-multipart>=0.0.20,<1",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.3,<9", "httpx>=0.28,<1"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
